@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id         String     @id @default(cuid())
+  name       String
+  email      String     @unique
+  password   String
+  status     StatusUser @default(ACTIVE)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  @@map("admins")
+}
+
+model Teacher {
+  id                  String     @id @default(cuid())
+  name                String
+  place_date_of_birth String
+  status              StatusUser @default(ACTIVE)
+  start_working_date  DateTime
+  position            String
+  role                String
+  nuptk_nbm           String?    @unique
+  education           String
+  photo               String?
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
+
+  @@map("teachers")
+}
+
+model Student {
+  id                           String   @id @default(cuid())
+  name                         String
+  gender                       String
+  place_of_birth               String
+  date_of_birth                DateTime
+  address                      String
+  phone_number                 String
+  from_school                  String
+  graduation_year              Int
+  biological_father            String
+  biological_mother            String
+  father_condition             String
+  mother_condition             String
+  father_job                   String
+  mother_job                   String
+  parent_guardian_phone_number String
+  major                        String
+  recommendation_from          String
+  created_at                   DateTime @default(now())
+  updated_at                   DateTime @updatedAt
+
+  @@map("students")
+}
+
+model SocialMedia {
+  id         String   @id @default(cuid())
+  name       String
+  link       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("social_media")
+}
+
+model News {
+  id         String     @id @default(cuid())
+  title      String
+  content    String
+  photo      String?
+  status     StatusNews @default(DRAFT)
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+
+  @@map("news")
+}
+
+enum StatusUser {
+  ACTIVE
+  INACTIVE
+}
+
+enum StatusNews {
+  PUBLISHED
+  DRAFT
+  INACTIVE
+}
