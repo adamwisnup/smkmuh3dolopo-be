@@ -12,6 +12,7 @@ async function bootstrap() {
     .setTitle('School API')
     .setDescription('API documentation SMK Muhammadiyah 3 Dolopo.')
     .setVersion('1.0')
+     .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

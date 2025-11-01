@@ -5,6 +5,7 @@ import { StudentModule } from './modules/students/student.module';
 import { TeacherModule } from './modules/teachers/teacher.module';
 import { SocialMediaModule } from './modules/socialMedia/socialMedia.module';
 import { NewsModule } from './modules/news/news.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { NewsModule } from './modules/news/news.module';
     TeacherModule,
     SocialMediaModule,
     NewsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

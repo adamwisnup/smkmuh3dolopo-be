@@ -1,5 +1,5 @@
-import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AppLogger } from '../../../utils/logger';
 import { CreateTeacherService } from "../services/create-teacher.service";
 import { UpdateTeacherService } from "../services/update-teacher.service";
@@ -9,6 +9,7 @@ import { GetByIdTeacherService } from "../services/getById-teacher.service";
 import { CreateTeacherDto } from "../dto/create-student.dto";
 import { ResponseError, ResponseSuccess } from "src/utils/response";
 import { UpdateTeacherDto } from '../dto/update-teacher.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags("teachers")
 @Controller("teachers")
@@ -26,6 +27,8 @@ export class TeacherController {
   }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create a new teacher' })
   @ApiResponse({ status: 201, description: 'Teacher created successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -126,6 +129,8 @@ export class TeacherController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Update an existing teacher' })
   @ApiResponse({ status: 200, description: 'Teacher updated successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -171,6 +176,8 @@ export class TeacherController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Delete a teacher' })
   @ApiResponse({ status: 200, description: 'Teacher deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Teacher not found.' })

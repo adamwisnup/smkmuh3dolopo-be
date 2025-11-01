@@ -1,5 +1,5 @@
-import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AppLogger } from '../../../utils/logger';
 import { CreateNewsService } from "../services/create-news.service";
 import { UpdateNewsService } from "../services/update-news.service";
@@ -11,6 +11,7 @@ import { ResponseError, ResponseSuccess } from "src/utils/response";
 import { UpdateNewsDto } from '../dto/update-news.dto';
 import { PublishCountNewsService } from '../services/publishCount-news.service';
 import { TotalCountNewsService } from '../services/totalCount-news.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags("news")
 @Controller("news")
@@ -30,6 +31,8 @@ export class NewsController {
   }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create a new news' })
   @ApiResponse({ status: 201, description: 'News created successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -130,6 +133,8 @@ export class NewsController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Update news by ID' })
   @ApiResponse({ status: 200, description: 'News updated successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -215,6 +220,8 @@ export class NewsController {
   }
 
   @Get('stats/published-count')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get count of published news' })
   @ApiResponse({ status: 200, description: 'Published news count retrieved successfully' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
@@ -244,6 +251,8 @@ export class NewsController {
   }
 
   @Get('stats/total-count')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get total count of news' })
   @ApiResponse({ status: 200, description: 'Total news count retrieved successfully' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })

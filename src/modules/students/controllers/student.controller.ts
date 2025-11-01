@@ -1,5 +1,5 @@
-import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger';
+import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { GetAllStudentService } from '../services/getAll-student.service';
 import { ResponseSuccess, ResponseError } from '../../../utils/response';
 import { AppLogger } from '../../../utils/logger';
@@ -11,6 +11,7 @@ import { UpdateStudentDto } from '../dto/update-student.dto';
 import { DeleteStudentService } from '../services/delete-student.service';
 import { RegisterCountStudentService } from '../services/registerCount-student.service';
 import { LastWeekRegisterCountStudentService } from '../services/LastWeekRegisterCount-student.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('students')
 @Controller('students')
@@ -30,6 +31,8 @@ export class StudentController {
   }
 
   @Get()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get all students with pagination' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
@@ -71,6 +74,8 @@ export class StudentController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get student by ID' })
   @ApiResponse({ status: 200, description: 'Student details.' })
   @ApiResponse({ status: 404, description: 'Student not found.' })
@@ -137,6 +142,8 @@ export class StudentController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Update an existing student' })
   @ApiResponse({ status: 200, description: 'Student updated successfully.' })
   @ApiResponse({ status: 404, description: 'Student not found.' })
@@ -162,6 +169,8 @@ export class StudentController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Delete a student' })
   @ApiResponse({ status: 200, description: 'Student deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Student not found.' })
@@ -186,6 +195,8 @@ export class StudentController {
   }
 
   @Get('stats/registered-count')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get total registered students count' })
   @ApiResponse({ status: 200, description: 'Total registered students count.' })
   async getRegisteredCount(): Promise<ResponseSuccess | ResponseError> {
@@ -206,6 +217,8 @@ export class StudentController {
   }
 
   @Get('stats/last-week-registered-count')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get last week registered students count' })
   @ApiResponse({ status: 200, description: 'Last week registered students count.' })
   async getLastWeekRegisteredCount(): Promise<ResponseSuccess | ResponseError> {
