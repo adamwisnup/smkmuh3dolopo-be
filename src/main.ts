@@ -1,8 +1,8 @@
+import express from 'express';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,7 +20,12 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api-docs', app, document, {
+    customSiteTitle: 'SMK Muhammadiyah 3 Dolopo API Docs',
+    swaggerOptions: {
+      persistAuthorization: true,
+    },
+  });
 
   await app.init();
 }
