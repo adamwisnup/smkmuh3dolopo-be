@@ -19,7 +19,7 @@ export class UpdateNewsService {
 
       let photoUrl: string | undefined;
 
-      if (dto.photo && dto.photo.buffer) {
+      if (dto.photo?.buffer) {
         const uploadResult = await imagekit.upload({
           file: dto.photo.buffer,
           fileName: `news-${id}-${Date.now()}`,
@@ -28,11 +28,19 @@ export class UpdateNewsService {
         photoUrl = uploadResult.url;
         this.logger.log('Service: Photo uploaded to ImageKit', { url: photoUrl });
       }
-      const { photo: _filePhoto, ...restDto } = dto as any;
-      const updatePayload: any = { ...restDto };
+
+      const { photo: _ignoredPhoto, ...restDto } = dto;
+      const updatePayload: Partial<News> = { ...restDto };
+
       if (photoUrl) {
         updatePayload.photo = photoUrl;
       }
+
+      if (dto.content) {
+        const headline = dto.content.split(/(?<=[.!?])\s+/)[0];
+        updatePayload.headline = headline;
+      }
+
       const updatedNews = await this.commandRepo.update(id, updatePayload);
 
       this.logger.log('Service: Successfully updated news', { id });

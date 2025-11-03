@@ -76,4 +76,30 @@ export class NewsQueryRepository implements INewsQueryRepository {
       throw error;
     }
   }
+
+  async findPublishedNews(options?: { page?: number; limit?: number }): Promise<{ data: News[]; pagination: any }> {
+    try {
+      this.logger.log('Fetching published news with pagination', { options });
+
+      const { page, limit, offset } = defaultPaginator(options);
+      const [newsItems, totalCount] = await Promise.all([
+        prisma.prismaClient.news.findMany({
+          where: { status: StatusNews.PUBLISHED },
+          skip: offset,
+          take: limit,
+          orderBy: { created_at: 'desc' },
+        }),
+        prisma.prismaClient.news.count({
+          where: { status: StatusNews.PUBLISHED },
+        }),
+      ]);
+      const pagination = generatePaginator(page, limit, totalCount);
+
+      this.logger.log('Successfully fetched published news', { totalCount, pagination });
+      return { data: newsItems, pagination };
+    } catch (error) {
+      this.logger.error('Error fetching published news', error);
+      throw error;
+    }
+  }
 }

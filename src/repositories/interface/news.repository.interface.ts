@@ -5,6 +5,7 @@ export interface INewsQueryRepository {
   findById(id: string): Promise<News | null>;
   totalNewsCount(): Promise<number>;
   publishNewsCount(): Promise<number>;
+  findPublishedNews(options?: { page?: number; limit?: number }): Promise<{ data: News[]; pagination: any }>;
 }
 
 export interface INewsCommandRepository {

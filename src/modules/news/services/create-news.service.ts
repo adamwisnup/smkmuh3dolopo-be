@@ -13,7 +13,7 @@ export class CreateNewsService {
     this.logger = new AppLogger('CreateNewsService');
   }
 
-  async execute(dto:CreateNewsDto): Promise<News> {
+  async execute(dto: CreateNewsDto): Promise<News> {
     try {
       this.logger.log('Service: Executing create news', { title: dto.title });
 
@@ -28,13 +28,16 @@ export class CreateNewsService {
         this.logger.log('Service: Photo uploaded to ImageKit', { url: photoUrl });
       }
 
+      const headline = dto.content.split(/(?<=[.!?])\s+/)[0];
+
       const newNews = await this.commandRepo.create({
         title: dto.title,
         content: dto.content,
         status: dto.status,
         photo: photoUrl,
+        headline,
       });
-      
+
       this.logger.log('Service: Successfully created news', { id: newNews.id });
       return newNews;
     } catch (error) {

@@ -82,6 +82,7 @@ model News {
   id         String     @id @default(cuid())
   title      String
   content    String
+  headline   String?
   photo      String?
   status     StatusNews @default(DRAFT)
   created_at DateTime   @default(now())

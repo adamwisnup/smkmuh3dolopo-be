@@ -13,6 +13,7 @@ import { PublishCountNewsService } from '../services/publishCount-news.service';
 import { TotalCountNewsService } from '../services/totalCount-news.service';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { GetPublishNewsService } from '../services/getPublish-news.service';
 
 @ApiTags("news")
 @Controller("news")
@@ -27,6 +28,7 @@ export class NewsController {
     private readonly getByIdNewsService: GetByIdNewsService,
     private readonly publishCountNewsService: PublishCountNewsService,
     private readonly totalCountNewsService: TotalCountNewsService,
+    private readonly getPublishNewsService: GetPublishNewsService,
   ) {
     this.logger = new AppLogger('NewsController');
   }
@@ -72,6 +74,8 @@ export class NewsController {
   }
 
   @Get()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Get all news with pagination' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
@@ -97,6 +101,42 @@ export class NewsController {
       };
     } catch (error) {
       this.logger.error('API: Error in GET /news', error);
+      return {
+        meta: {
+          code: error.status || 500,
+          success: false,
+          message: error.message || 'Internal server error',
+        },
+      };
+    }
+  }
+
+  @Get('published')
+  @ApiOperation({ summary: 'Get published news with pagination' })
+  @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
+  @ApiResponse({ status: 200, description: 'Published news retrieved successfully' })
+  @ApiResponse({ status: 500, description: 'Internal server error.' })
+  async getPublishedNews(@Query() query: { page?: string; limit?: string }): Promise<ResponseSuccess | ResponseError> {
+    try {
+      this.logger.log('API: GET /news/published', { query });
+      const page = query.page ? parseInt(query.page, 10) : 1;
+      const limit = query.limit ? parseInt(query.limit, 10) : 10;
+      if (page < 1 || limit < 1) {
+        throw new HttpException('Invalid pagination parameters', HttpStatus.BAD_REQUEST);
+      }
+      const newsList = await this.getPublishNewsService.execute({ page, limit });
+      this.logger.log('API: Successfully retrieved published news', { count: newsList.data.length });
+      return {
+        meta: {
+          code: 200,
+          success: true,
+          message: 'Published news retrieved successfully',
+        },
+        data: newsList,
+      };
+    } catch (error) {
+      this.logger.error('API: Error in GET /news/published', error);
       return {
         meta: {
           code: error.status || 500,

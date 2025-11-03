@@ -8,6 +8,7 @@ import { UpdateNewsService } from './services/update-news.service';
 import { DeleteNewsService } from './services/delete-news.service';
 import { PublishCountNewsService } from './services/publishCount-news.service';
 import { TotalCountNewsService } from './services/totalCount-news.service';
+import { GetPublishNewsService } from './services/getPublish-news.service';
 
 @Module({
   imports: [RepositoryModule],
@@ -20,6 +21,7 @@ import { TotalCountNewsService } from './services/totalCount-news.service';
     DeleteNewsService,
     PublishCountNewsService,
     TotalCountNewsService,
+    GetPublishNewsService,
   ],
 })
 
