@@ -1,5 +1,5 @@
-import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBody } from '@nestjs/swagger';
+import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiParam, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { ResponseSuccess, ResponseError } from '../../../utils/response';
 import { AppLogger } from '../../../utils/logger';
 import { GetByIdSocialMediaService } from '../services/getById-socialMedia.service';
@@ -9,6 +9,7 @@ import { CreateSocialMediaService } from '../services/create-socialMedia.service
 import { GetAllSocialMediaService } from '../services/getAll-socialMedia.service';
 import { CreateSocialMediaDto } from '../dto/create-socialMedia.dto';
 import { UpdateSocialMediaDto } from '../dto/update-socialMedia.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('social-media')
 @Controller('social-media')
@@ -26,6 +27,8 @@ export class SocialMediaController {
   }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Create a new social media' })
   @ApiResponse({ status: 201, description: 'Social media created successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -127,6 +130,8 @@ export class SocialMediaController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Update social media by ID' })
   @ApiResponse({ status: 200, description: 'Social media updated successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
@@ -168,6 +173,8 @@ export class SocialMediaController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Delete social media by ID' })
   @ApiResponse({ status: 200, description: 'Social media deleted successfully.' })
   @ApiResponse({ status: 404, description: 'Social media not found.' })

@@ -1,5 +1,5 @@
-import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AppLogger } from '../../../utils/logger';
 import { CreateNewsService } from "../services/create-news.service";
 import { UpdateNewsService } from "../services/update-news.service";
@@ -12,6 +12,7 @@ import { UpdateNewsDto } from '../dto/update-news.dto';
 import { PublishCountNewsService } from '../services/publishCount-news.service';
 import { TotalCountNewsService } from '../services/totalCount-news.service';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags("news")
 @Controller("news")
@@ -33,15 +34,23 @@ export class NewsController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('photo'))
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create a new news' })
   @ApiResponse({ status: 201, description: 'News created successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async create(@Body() dto: CreateNewsDto): Promise<ResponseSuccess | ResponseError> {
+  async create(@UploadedFile() photo: Express.Multer.File, @Body() dto: CreateNewsDto): Promise<ResponseSuccess | ResponseError> {
     try {
       this.logger.log('API: POST /news', { dto });
-      const newNews = await this.createNewsService.execute(dto);
+      
+      const newNews = await this.createNewsService.execute({
+        ...dto,
+        photo,
+      });
+
       this.logger.log('API: Successfully created news', { id: newNews.id });
+
       return {
         meta: {
           code: 201,
@@ -135,19 +144,27 @@ export class NewsController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('photo'))
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Update news by ID' })
   @ApiResponse({ status: 200, description: 'News updated successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 404, description: 'News not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async update(@Param('id') id: string, @Body() dto: UpdateNewsDto): Promise<ResponseSuccess | ResponseError> {
+  async update(@Param('id') id: string, @UploadedFile() photo: Express.Multer.File, @Body() dto: UpdateNewsDto): Promise<ResponseSuccess | ResponseError> {
     try {
       this.logger.log('API: PATCH /news/:id', { id, dto });
-      const updatedNews = await this.updateNewsService.execute(id, dto);
+      
+      const updatedNews = await this.updateNewsService.execute(id, {
+        ...dto,
+        photo,
+      });
+
       if (!updatedNews) {
         this.logger.warn(`API: News not found (id: ${id})`);
         throw new HttpException('News not found', HttpStatus.NOT_FOUND);
       }
+
       this.logger.log(`API: Successfully updated news (id: ${id})`);
       return {
         meta: {
@@ -159,16 +176,16 @@ export class NewsController {
       };
     } catch (error) {
       if (error.code === 'P2025') {
-        this.logger.warn(`API: Teacher not found (id: ${id})`);
+        this.logger.warn(`API: News not found (id: ${id})`);
         return {
           meta: {
             code: 404,
             success: false,
-            message: 'Teacher not found',
+            message: 'News not found',
           },
         };
       }
-      this.logger.error('API: Error in PATCH /news/:id', error);
+      this.logger.error(`API: Error in PATCH /news/${id}`, error);
       return {
         meta: {
           code: error.status || 500,
@@ -180,6 +197,8 @@ export class NewsController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({ summary: 'Delete news by ID' })
   @ApiResponse({ status: 200, description: 'News deleted successfully' })
   @ApiResponse({ status: 404, description: 'News not found.' })

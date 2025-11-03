@@ -1,8 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { AppLogger } from "../../../utils/logger";
-import { TeacherCommandRepository } from "src/repositories/teachers/command.teacher";
-import { Teacher } from "../../../../generated/prisma";
-import { UpdateTeacherDto } from "../dto/update-teacher.dto";
+import { Injectable } from '@nestjs/common';
+import { AppLogger } from '../../../utils/logger';
+import { TeacherCommandRepository } from 'src/repositories/teachers/command.teacher';
+import { Teacher } from '../../../../generated/prisma';
+import { UpdateTeacherDto } from '../dto/update-teacher.dto';
+import imagekit from '../../../configs/imagekit.config';
 
 @Injectable()
 export class UpdateTeacherService {
@@ -14,8 +15,28 @@ export class UpdateTeacherService {
 
   async execute(id: string, dto: UpdateTeacherDto): Promise<Teacher> {
     try {
-      this.logger.log('Service: Executing update teacher', { id, dto });
-      const updatedTeacher = await this.commandRepo.update(id, dto);
+      this.logger.log('Service: Executing update teacher', { id });
+
+      let photoUrl: string | undefined;
+
+      if (dto.photo && dto.photo.buffer) {
+        const uploadResult = await imagekit.upload({
+          file: dto.photo.buffer,
+          fileName: `teacher-${id}-${Date.now()}`,
+          folder: 'smkmuh3dlp/guru',
+        });
+        photoUrl = uploadResult.url;
+        this.logger.log('Service: Photo uploaded to ImageKit', { url: photoUrl });
+      }
+
+      const { photo: _filePhoto, ...restDto } = dto as any;
+      const updatePayload: any = { ...restDto };
+      if (photoUrl) {
+        updatePayload.photo = photoUrl;
+      }
+
+      const updatedTeacher = await this.commandRepo.update(id, updatePayload);
+
       this.logger.log('Service: Successfully updated teacher', { id });
       return updatedTeacher;
     } catch (error) {

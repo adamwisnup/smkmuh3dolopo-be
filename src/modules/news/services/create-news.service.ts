@@ -3,6 +3,7 @@ import { AppLogger } from "../../../utils/logger";
 import { NewsCommandRepository } from "src/repositories/news/command.news";
 import { CreateNewsDto } from "../dto/create-news.dto";
 import { News } from "../../../../generated/prisma";
+import imagekit from '../../../configs/imagekit.config';
 
 @Injectable()
 export class CreateNewsService {
@@ -14,8 +15,26 @@ export class CreateNewsService {
 
   async execute(dto:CreateNewsDto): Promise<News> {
     try {
-      this.logger.log('Service: Executing create news', { dto });
-      const newNews = await this.commandRepo.create(dto);
+      this.logger.log('Service: Executing create news', { title: dto.title });
+
+      let photoUrl: string | undefined;
+      if (dto.photo && dto.photo.buffer) {
+        const uploadResult = await imagekit.upload({
+          file: dto.photo.buffer,
+          fileName: `news-${Date.now()}`,
+          folder: 'smkmuh3dlp/berita',
+        });
+        photoUrl = uploadResult.url;
+        this.logger.log('Service: Photo uploaded to ImageKit', { url: photoUrl });
+      }
+
+      const newNews = await this.commandRepo.create({
+        title: dto.title,
+        content: dto.content,
+        status: dto.status,
+        photo: photoUrl,
+      });
+      
       this.logger.log('Service: Successfully created news', { id: newNews.id });
       return newNews;
     } catch (error) {

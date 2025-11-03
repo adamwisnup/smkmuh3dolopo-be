@@ -1,5 +1,5 @@
-import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Query, HttpException, HttpStatus, Param, Post, Body, Patch, Delete, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiQuery, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { AppLogger } from '../../../utils/logger';
 import { CreateTeacherService } from "../services/create-teacher.service";
 import { UpdateTeacherService } from "../services/update-teacher.service";
@@ -10,6 +10,7 @@ import { CreateTeacherDto } from "../dto/create-student.dto";
 import { ResponseError, ResponseSuccess } from "src/utils/response";
 import { UpdateTeacherDto } from '../dto/update-teacher.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags("teachers")
 @Controller("teachers")
@@ -29,15 +30,23 @@ export class TeacherController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('photo'))
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Create a new teacher' })
   @ApiResponse({ status: 201, description: 'Teacher created successfully' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async create(@Body() dto: CreateTeacherDto): Promise<ResponseSuccess | ResponseError> {
+  async create(@UploadedFile() photo: Express.Multer.File, @Body() dto: CreateTeacherDto): Promise<ResponseSuccess | ResponseError> {
     try {
       this.logger.log('API: POST /teachers', { dto });
-      const newTeacher = await this.createTeacherService.execute(dto);
+
+      const newTeacher = await this.createTeacherService.execute({
+        ...dto,
+        photo,
+      });
+
       this.logger.log('API: Successfully created teacher', { id: newTeacher.id });
+
       return {
         meta: {
           code: 201,
@@ -131,19 +140,27 @@ export class TeacherController {
   @Patch(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('photo'))
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Update an existing teacher' })
   @ApiResponse({ status: 200, description: 'Teacher updated successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   @ApiResponse({ status: 404, description: 'Teacher not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
-  async update(@Param('id') id: string, @Body() dto: UpdateTeacherDto): Promise<ResponseSuccess | ResponseError> {
+  async update(@Param('id') id: string, @UploadedFile() photo: Express.Multer.File, @Body() dto: UpdateTeacherDto): Promise<ResponseSuccess | ResponseError> {
     try {
       this.logger.log(`API: PATCH /teachers/${id}`, { dto });
-      const updatedTeacher = await this.updateTeacherService.execute(id, dto);
+
+      const updatedTeacher = await this.updateTeacherService.execute(id, {
+        ...dto,
+        photo,
+      });
+
       if (!updatedTeacher) {
         this.logger.warn(`API: Teacher not found (id: ${id})`);
         throw new HttpException('Teacher not found', HttpStatus.NOT_FOUND);
       }
+
       this.logger.log(`API: Successfully updated teacher (id: ${id})`);
       return {
         meta: {
@@ -174,6 +191,7 @@ export class TeacherController {
       };
     }
   }
+
 
   @Delete(':id')
   @ApiBearerAuth()

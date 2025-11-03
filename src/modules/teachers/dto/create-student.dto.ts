@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsDateString, IsEnum, IsOptional } from 'class-validator';
 import { StatusUser } from '../../../../generated/prisma';
+import type { Express } from 'express';
 
 export class CreateTeacherDto {
   @ApiProperty({ description: 'Nama guru', example: 'John Doe' })
@@ -36,8 +37,7 @@ export class CreateTeacherDto {
   @IsString()
   education: string;
 
-  @ApiProperty({ description: 'Foto guru (opsional)', example: 'https://example.com/photo.jpg', required: false })
+  @ApiProperty({ description: 'Foto guru (opsional)', type: 'string', format: 'binary', required: false})
   @IsOptional()
-  @IsString()
-  photo?: string;
+  photo?: Express.Multer.File;
 }

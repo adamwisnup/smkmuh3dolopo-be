@@ -10,11 +10,10 @@ export class CreateNewsDto {
   @ApiProperty({ description: 'Konten berita', example: 'Ini adalah isi dari berita sekolah hari ini...' })
   @IsString()
   content: string;
-
-  @ApiProperty({ description: 'Foto berita (opsional)', example: 'https://example.com/photo.jpg', required: false })
+  
+  @ApiProperty({ description: 'Foto berita (opsional)', type: 'string', format: 'binary', required: false})
   @IsOptional()
-  @IsString()
-  photo?: string;
+  photo?: Express.Multer.File;
 
   @ApiProperty({ description: 'Status berita', enum: StatusNews, example: StatusNews.DRAFT })
   @IsEnum(StatusNews)
