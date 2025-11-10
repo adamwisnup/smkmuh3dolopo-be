@@ -91,6 +91,21 @@ model News {
   @@map("news")
 }
 
+model Career {
+  id              String    @id @default(cuid())
+  title           String
+  requirements    String?
+  job_description String?
+  location        String?
+  benefits        String?
+  deadline        DateTime?
+  photo           String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  @@map("careers")
+}
+
 enum StatusUser {
   ACTIVE
   INACTIVE

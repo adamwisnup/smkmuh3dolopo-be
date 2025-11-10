@@ -30,7 +30,7 @@ export class UpdateTeacherService {
       }
 
       const { photo: _filePhoto, ...restDto } = dto as any;
-      const updatePayload: any = { ...restDto };
+      const updatePayload: Partial<Teacher> = { ...restDto };
       if (photoUrl) {
         updatePayload.photo = photoUrl;
       }

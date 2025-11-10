@@ -10,6 +10,8 @@ import { SocialMediaQueryRepository } from './socialMedia/query.socialMedia';
 import { NewsCommandRepository } from './news/command.news';
 import { NewsQueryRepository } from './news/query.news';
 import { AdminQueryRepository } from './admins/query.admin';
+import { CareerCommandRepository } from './careers/command.career';
+import { CareerQueryRepository } from './careers/query.career';
 
 @Module({
   providers: [
@@ -18,6 +20,7 @@ import { AdminQueryRepository } from './admins/query.admin';
     SocialMediaCommandRepository, SocialMediaQueryRepository,
     NewsCommandRepository, NewsQueryRepository,
     AdminQueryRepository,
+    CareerCommandRepository, CareerQueryRepository,
   ],
   exports: [
     StudentQueryRepository, StudentCommandRepository,
@@ -25,6 +28,7 @@ import { AdminQueryRepository } from './admins/query.admin';
     SocialMediaCommandRepository, SocialMediaQueryRepository,
     NewsCommandRepository, NewsQueryRepository,
     AdminQueryRepository,
+    CareerCommandRepository, CareerQueryRepository,
   ],
 })
 export class RepositoryModule {}
