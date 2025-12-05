@@ -41,6 +41,7 @@ export class LoginAdminService {
       const token = this.generateTokenService.execute({
         id: admin.id,
         email: admin.email,
+        role: admin.role,
       });
 
       this.logger.log(`Service: Login successful, token generated for admin (email: ${dto.email})`);

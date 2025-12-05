@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 export class GenerateTokenService {
   constructor(private readonly jwtService: JwtService) {}
 
-  execute(payload: { id: string; email: string }): string {
+  execute(payload: { id: string; email: string; role: string }): string {
     return this.jwtService.sign(payload);
   }
 }

@@ -12,6 +12,8 @@ import { DeleteStudentService } from '../services/delete-student.service';
 import { RegisterCountStudentService } from '../services/registerCount-student.service';
 import { LastWeekRegisterCountStudentService } from '../services/LastWeekRegisterCount-student.service';
 import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../../../decorators/roles.decorator';
+import { RolesGuard } from '../../../guards/roles.guard';
 
 @ApiTags('students')
 @Controller('students')
@@ -32,11 +34,13 @@ export class StudentController {
 
   @Get()
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Get all students with pagination' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('SUPER_ADMIN')
+  @ApiOperation({ summary: 'Get all students with pagination (Super Admin only)' })
   @ApiQuery({ name: 'page', required: false, type: Number, description: 'Page number' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Items per page' })
   @ApiResponse({ status: 200, description: 'List of students with pagination.' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Super Admin access required' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async getAll(@Query() query: { page?: string; limit?: string }): Promise<ResponseSuccess | ResponseError> {
     try {
@@ -75,9 +79,11 @@ export class StudentController {
 
   @Get(':id')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Get student by ID' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('SUPER_ADMIN')
+  @ApiOperation({ summary: 'Get student by ID (Super Admin only)' })
   @ApiResponse({ status: 200, description: 'Student details.' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Super Admin access required' })
   @ApiResponse({ status: 404, description: 'Student not found.' })
   @ApiResponse({ status: 500, description: 'Internal server error.' })
   async getById(@Param('id') id: string): Promise<ResponseSuccess | ResponseError> {
@@ -143,9 +149,11 @@ export class StudentController {
 
   @Patch(':id')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Update an existing student' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('SUPER_ADMIN')
+  @ApiOperation({ summary: 'Update an existing student (Super Admin only)' })
   @ApiResponse({ status: 200, description: 'Student updated successfully.' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Super Admin access required' })
   @ApiResponse({ status: 404, description: 'Student not found.' })
   async update(@Param('id') id: string, @Body() dto: UpdateStudentDto): Promise<ResponseSuccess | ResponseError> {
     try {
@@ -170,9 +178,11 @@ export class StudentController {
 
   @Delete(':id')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Delete a student' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('SUPER_ADMIN')
+  @ApiOperation({ summary: 'Delete a student (Super Admin only)' })
   @ApiResponse({ status: 200, description: 'Student deleted successfully.' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Super Admin access required' })
   @ApiResponse({ status: 404, description: 'Student not found.' })
   async delete(@Param('id') id: string): Promise<ResponseSuccess | ResponseError> {
     try {
@@ -196,9 +206,11 @@ export class StudentController {
 
   @Get('stats/registered-count')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Get total registered students count' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('SUPER_ADMIN')
+  @ApiOperation({ summary: 'Get total registered students count (Super Admin only)' })
   @ApiResponse({ status: 200, description: 'Total registered students count.' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Super Admin access required' })
   async getRegisteredCount(): Promise<ResponseSuccess | ResponseError> {
     try {
       this.logger.log('API: GET /students/stats/registered-count');
@@ -218,9 +230,11 @@ export class StudentController {
 
   @Get('stats/last-week-registered-count')
   @ApiBearerAuth()
-  @UseGuards(AuthGuard('jwt'))
-  @ApiOperation({ summary: 'Get last week registered students count' })
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles('SUPER_ADMIN')
+  @ApiOperation({ summary: 'Get last week registered students count (Super Admin only)' })
   @ApiResponse({ status: 200, description: 'Last week registered students count.' })
+  @ApiResponse({ status: 403, description: 'Forbidden - Super Admin access required' })
   async getLastWeekRegisteredCount(): Promise<ResponseSuccess | ResponseError> {
     try {
       this.logger.log('API: GET /students/stats/last-week-registered-count');
