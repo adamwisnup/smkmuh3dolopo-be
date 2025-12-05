@@ -1,0 +1,1058 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "SMK MUH 3 DOLOPO API",
+		"description": "Complete API documentation for SMK MUH 3 DOLOPO backend service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login/admin",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login", "admin"]
+						},
+						"description": "Authenticate admin and get JWT token"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Admins",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/admin?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "admin"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Retrieve all admins with pagination (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Admin by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/admin/{{adminId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "admin", "{{adminId}}"]
+						},
+						"description": "Get specific admin details (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newadmin@example.com\",\n  \"password\": \"password123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/admin",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "admin"]
+						},
+						"description": "Create new admin account (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Admin",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"updated@example.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/admin/{{adminId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "admin", "{{adminId}}"]
+						},
+						"description": "Update admin details (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Admin",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/auth/admin/{{adminId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "admin", "{{adminId}}"]
+						},
+						"description": "Delete admin (Super Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Admin authentication and management endpoints"
+		},
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "Get All Students",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/students?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["students"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve all students with pagination (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Student by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/students/{{studentId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["students", "{{studentId}}"]
+						},
+						"description": "Get specific student details (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Student",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"gender\": \"Laki-laki\",\n  \"place_of_birth\": \"Jakarta\",\n  \"date_of_birth\": \"2005-01-01\",\n  \"address\": \"Jl. Contoh No. 123\",\n  \"phone_number\": \"08123456789\",\n  \"from_school\": \"SMP Negeri 1\",\n  \"graduation_year\": 2020,\n  \"biological_father\": \"Father Name\",\n  \"biological_mother\": \"Mother Name\",\n  \"father_condition\": \"Sehat\",\n  \"mother_condition\": \"Sehat\",\n  \"father_job\": \"Pegawai Swasta\",\n  \"mother_job\": \"Ibu Rumah Tangga\",\n  \"parent_guardian_phone_number\": \"081234567890\",\n  \"major\": \"Teknik Komputer Jaringan\",\n  \"recommendation_from\": \"Teman\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students",
+							"host": ["{{baseUrl}}"],
+							"path": ["students"]
+						},
+						"description": "Create new student registration (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Student",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Name\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/{{studentId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["students", "{{studentId}}"]
+						},
+						"description": "Update student details (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Student",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/students/{{studentId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["students", "{{studentId}}"]
+						},
+						"description": "Delete student (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Registered Students Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/students/stats/registered-count",
+							"host": ["{{baseUrl}}"],
+							"path": ["students", "stats", "registered-count"]
+						},
+						"description": "Get total registered students count (Super Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Last Week Registered Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/students/stats/last-week-registered-count",
+							"host": ["{{baseUrl}}"],
+							"path": ["students", "stats", "last-week-registered-count"]
+						},
+						"description": "Get students registered last week (Super Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Student management endpoints"
+		},
+		{
+			"name": "Teachers",
+			"item": [
+				{
+					"name": "Get All Teachers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/teachers?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["teachers"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve all teachers with pagination (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Teacher by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/teachers/{{teacherId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["teachers", "{{teacherId}}"]
+						},
+						"description": "Get specific teacher details (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Teacher",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "John Doe",
+									"type": "text"
+								},
+								{
+									"key": "position",
+									"value": "Guru Matematika",
+									"type": "text"
+								},
+								{
+									"key": "nip",
+									"value": "1234567890",
+									"type": "text"
+								},
+								{
+									"key": "subject",
+									"value": "Matematika",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/teachers",
+							"host": ["{{baseUrl}}"],
+							"path": ["teachers"]
+						},
+						"description": "Create new teacher profile (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Teacher",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Updated Name",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/teachers/{{teacherId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["teachers", "{{teacherId}}"]
+						},
+						"description": "Update teacher details (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Teacher",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/teachers/{{teacherId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["teachers", "{{teacherId}}"]
+						},
+						"description": "Delete teacher profile (JWT required)"
+					},
+					"response": []
+				}
+			],
+			"description": "Teacher management endpoints"
+		},
+		{
+			"name": "Careers",
+			"item": [
+				{
+					"name": "Get All Careers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/careers?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["careers"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve all career postings with pagination (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Career by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/careers/{{careerId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["careers", "{{careerId}}"]
+						},
+						"description": "Get specific career details (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Career",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "position",
+									"value": "Guru Teknik Komputer",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Deskripsi pekerjaan...",
+									"type": "text"
+								},
+								{
+									"key": "requirements",
+									"value": "Persyaratan pekerjaan...",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/careers",
+							"host": ["{{baseUrl}}"],
+							"path": ["careers"]
+						},
+						"description": "Create new career posting (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Career",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "position",
+									"value": "Updated Position",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/careers/{{careerId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["careers", "{{careerId}}"]
+						},
+						"description": "Update career details (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Career",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/careers/{{careerId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["careers", "{{careerId}}"]
+						},
+						"description": "Delete career posting (JWT required)"
+					},
+					"response": []
+				}
+			],
+			"description": "Career management endpoints"
+		},
+		{
+			"name": "News",
+			"item": [
+				{
+					"name": "Get All News",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/news?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["news"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve all news with pagination (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Published News",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/news/published?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["news", "published"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve only published news with pagination (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get News by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/news/{{newsId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["news", "{{newsId}}"]
+						},
+						"description": "Get specific news details (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create News",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Judul Berita",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Konten berita lengkap...",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "PUBLISHED",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/news",
+							"host": ["{{baseUrl}}"],
+							"path": ["news"]
+						},
+						"description": "Create new news article (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update News",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Updated Title",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "DRAFT",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/news/{{newsId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["news", "{{newsId}}"]
+						},
+						"description": "Update news article (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete News",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/news/{{newsId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["news", "{{newsId}}"]
+						},
+						"description": "Delete news article (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Published News Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/news/stats/published-count",
+							"host": ["{{baseUrl}}"],
+							"path": ["news", "stats", "published-count"]
+						},
+						"description": "Get count of published news (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total News Count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/news/stats/total-count",
+							"host": ["{{baseUrl}}"],
+							"path": ["news", "stats", "total-count"]
+						},
+						"description": "Get total news count (JWT required)"
+					},
+					"response": []
+				}
+			],
+			"description": "News management endpoints"
+		},
+		{
+			"name": "Social Media",
+			"item": [
+				{
+					"name": "Get All Social Media",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/social-media?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["social-media"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieve all social media links with pagination (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Social Media by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/social-media/{{socialMediaId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["social-media", "{{socialMediaId}}"]
+						},
+						"description": "Get specific social media link (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Social Media",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"platform\": \"Facebook\",\n  \"url\": \"https://facebook.com/smk3dolopo\",\n  \"icon\": \"facebook\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/social-media",
+							"host": ["{{baseUrl}}"],
+							"path": ["social-media"]
+						},
+						"description": "Add new social media link (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Social Media",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"url\": \"https://updated-url.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/social-media/{{socialMediaId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["social-media", "{{socialMediaId}}"]
+						},
+						"description": "Update social media link (JWT required)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Social Media",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/social-media/{{socialMediaId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["social-media", "{{socialMediaId}}"]
+						},
+						"description": "Delete social media link (JWT required)"
+					},
+					"response": []
+				}
+			],
+			"description": "Social media management endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000/api",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "adminId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "studentId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "teacherId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "careerId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newsId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "socialMediaId",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
