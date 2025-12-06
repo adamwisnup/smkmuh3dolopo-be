@@ -3,6 +3,9 @@ import { AdminQueryRepository } from '../../../repositories/admins/query.admin';
 import { AdminCommandRepository } from '../../../repositories/admins/command.admin';
 import { AppLogger } from '../../../utils/logger';
 import { UpdateAdminDto } from '../dto/update-admin.dto';
+import { Admin, StatusUser } from '../../../../generated/prisma';
+import { AdminResponse } from '../../../types/admin.types';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UpdateAdminService {
@@ -15,7 +18,7 @@ export class UpdateAdminService {
     this.logger = new AppLogger('UpdateAdminService');
   }
 
-  async execute(id: string, dto: UpdateAdminDto) {
+  async execute(id: string, dto: UpdateAdminDto): Promise<AdminResponse> {
     try {
       this.logger.log(`Service: Updating admin with ID: ${id}`);
 
@@ -35,7 +38,21 @@ export class UpdateAdminService {
         }
       }
 
-      const updatedAdmin = await this.commandRepo.update(id, dto);
+      // Create update payload with fallback to existing values
+      const updatePayload: Partial<Admin> = {
+        name: dto.name ?? existingAdmin.name,
+        email: dto.email ?? existingAdmin.email,
+        role: dto.role ?? existingAdmin.role,
+        status: (dto.status as StatusUser) ?? existingAdmin.status,
+      };
+
+      // Hash password if provided
+      if (dto.password) {
+        const saltRounds = 10;
+        updatePayload.password = await bcrypt.hash(dto.password, saltRounds);
+      }
+
+      const updatedAdmin = await this.commandRepo.update(id, updatePayload);
 
       this.logger.log(`Service: Successfully updated admin with ID: ${updatedAdmin.id}`);
       return updatedAdmin;

@@ -50,10 +50,9 @@ export class AdminCommandRepository implements IAdminCommandRepository {
     try {
       this.logger.log(`Updating admin with ID: ${id}`);
 
-      // If password is being updated, hash it
-      if (data.password) {
-        data.password = await bcrypt.hash(data.password, 10);
-      }
+      // Note: Password should already be hashed in the service layer
+      // We no longer hash here to avoid double hashing
+
       const admin = await prisma.prismaClient.admin.update({
         where: { id },
         data,

@@ -17,7 +17,7 @@ export class LoginAdminService {
     this.logger = new AppLogger('LoginAdminService');
   }
 
-  async execute(dto: LoginAdminDto): Promise<{ token: string }> {
+  async execute(dto: LoginAdminDto): Promise<{ token: string; name: string; email: string; role: string }> {
     try {
       this.logger.log(`Service: Executing login admin by email: ${dto.email}`);
       const admin = await this.queryRepo.findByEmail(dto.email);
@@ -45,7 +45,12 @@ export class LoginAdminService {
       });
 
       this.logger.log(`Service: Login successful, token generated for admin (email: ${dto.email})`);
-      return { token };
+      return {
+        token,
+        name: admin.name,
+        email: admin.email,
+        role: admin.role,
+      };
     } catch (error) {
       this.logger.error(`Service: Error executing login admin by email (email: ${dto.email})`, error);
       throw error;

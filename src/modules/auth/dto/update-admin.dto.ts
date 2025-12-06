@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { IsEmail, IsString, IsEnum, IsOptional } from 'class-validator';
+import { IsEmail, IsString, IsEnum, IsOptional, IsStrongPassword } from 'class-validator';
 import { CreateAdminDto } from './create-admin.dto';
 import { AdminRole } from '../../../../generated/prisma';
 
@@ -33,4 +33,9 @@ export class UpdateAdminDto extends PartialType(CreateAdminDto) {
   @IsOptional()
   @IsEnum(['ACTIVE', 'INACTIVE'])
   status?: string;
+
+  @ApiProperty({ example: 'NewStrongP@ssw0rd123!', description: 'New password (optional)', required: false })
+  @IsOptional()
+  @IsStrongPassword()
+  password?: string;
 }
